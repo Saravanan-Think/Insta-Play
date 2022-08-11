@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import Language from '../model/language.json'
+import HomeHeader from '../components/home_header';
 
 const MovieDetails = () => {
   const navigation = useNavigation();
@@ -11,6 +12,7 @@ const MovieDetails = () => {
  //alert(JSON.stringify())
   return (
     <View style={{backgroundColor: '#0c111b', flex: 1}}>
+      <HomeHeader/>
       <View>
         <TouchableOpacity
           style={{position: 'absolute', top: 5, left: 12, zIndex: 1}}

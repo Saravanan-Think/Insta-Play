@@ -1,0 +1,33 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/BIG JOHN.otf",
+      "sha1": "888e6eed656af013aa645953464b2b948372b8ce"
+    },
+    {
+      "path": "src/assets/fonts/BigJohnPRO-Bold.otf",
+      "sha1": "b12cffd4db530499e766fc21371e1b5b5ca7cc64"
+    },
+    {
+      "path": "src/assets/fonts/BigJohnPRO-Light.otf",
+      "sha1": "e1d27b39c2110501178e6f4b6adbc3dc4a620139"
+    },
+    {
+      "path": "src/assets/fonts/BigJohnPRO-Regular.otf",
+      "sha1": "510a6bc799eafaf45e4224ffc2949159a0d11e39"
+    },
+    {
+      "path": "src/assets/fonts/HelveticaNeueLTPro.otf",
+      "sha1": "fb8c7a31e289d451873aa4e7a248f893ba446c7b"
+    },
+    {
+      "path": "src/assets/fonts/Poppins-Medium.ttf",
+      "sha1": "6575dbf38e9e61beec498e2be61c89d43399db24"
+    },
+    {
+      "path": "src/assets/fonts/Poppins-Regular.ttf",
+      "sha1": "dd48971530e3f19f7067ad80ce6c215365fe7269"
+    }
+  ]
+}

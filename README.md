@@ -1,8 +1,11 @@
 # Insta-Play
 Movie application
-![Screenshot](3.png)
 Home Page
-![Screenshot](2.png)
+![Screenshot](3.png|width=100)
+
 Pagination
-![Screenshot](1.png)
+![Screenshot](2.png)
+
 Movie Details
+![Screenshot](1.png)
+

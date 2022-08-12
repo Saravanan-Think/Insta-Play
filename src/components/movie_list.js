@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,53 +12,61 @@ import {
   TouchableOpacity,
   useColorScheme,
   FlatList,
+  ActivityIndicator
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import RateIcon from 'react-native-vector-icons/Entypo';
 import Banner from './banner';
-import PopularMovieList from '../services/popular_movies_list';
-import Images from '../services/images';
+import { fetchPopularMovies } from '../services/https';
+import Pagination from './pagination';
+import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
-const MovieList = ({}) => {
+
+
+const MovieList = ({ }) => {
   const navigation = useNavigation();
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState();
-  const [details, setDetails] = useState();
+  const [numbers, setNumbers] = useState();
+  const [ref, setRef] = useState(null);
+
+  const generatePageNumber = (value) => {
+    let numbers = []
+    for (var i = 0; value > i; i++) {
+      if (i < 100) {
+        numbers.push({ key: i + 1, title: i + 1 });
+      }
+    }
+    setNumbers(numbers)
+  }
   //List of Movies
   useEffect(() => {
-    fetch(
-      'https://api.themoviedb.org/3/movie/popular?api_key=a8d91a25929d2341de07cc8fff37c255&language=en-US&page=1',
-    )
-      .then(response => response.json())
-      .then(json => setData(json.results))
-      .catch(error => console.error(error))
-      .finally(() => setLoading(false));
-    //alert(JSON.stringify(data));
+    async function getPopularMovies() {
+      const popular_movies = await fetchPopularMovies(1);
+      setData(popular_movies.results);
+      generatePageNumber(popular_movies.total_pages);
+      setLoading(false)
+      //alert(JSON.stringify(popular_movies))
+    }
+    getPopularMovies();
   }, []);
-  function fetchData(id) {
-    fetch(
-      'https://api.themoviedb.org/3/movie/' +
-        id +
-        '?api_key=a8d91a25929d2341de07cc8fff37c255&language=en-US',
-    )
-      .then(response => response.json())
-      .then(json => setDetails(json))
-      .catch(error => console.error(error))
-      .finally(() => setLoading(false));
-    //alert(JSON.stringify(details))
-  }
+
   //Home view
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && <ActivityIndicator color={"#fff"} />}
       <FlatList
+        ref={(ref) => {
+          setRef(ref);
+        }}
         data={data}
         keyExtractor={item => item.id}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.item}>
             <Image
               resizeMethod="auto"
               resizeMode="cover"
-              style={{width: 355, height: 150}}
+              style={{ width: 355, height: 150 }}
               source={{
                 uri: 'https://image.tmdb.org/t/p/original/' + item.poster_path,
               }}
@@ -67,13 +75,10 @@ const MovieList = ({}) => {
               <LinearGradient
                 colors={['#2B507C', '#1A2B4A', '#2B507C']}
                 locations={[0.1, 1, 0.1]}
-                style={{width: 355, height: 70}}>
+                style={{ width: 355, height: 70 }}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('MovieDetails', {id: details});
-                  }}
-                  onPressIn={() => {
-                    fetchData(item.id);
+                    navigation.navigate('MovieDetails', { id: item.id });
                   }}
                   style={{
                     paddingStart: 30,
@@ -86,17 +91,17 @@ const MovieList = ({}) => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}>
-                    <View style={{flexDirection: 'column'}}>
+                    <View style={{ flexDirection: 'column' }}>
                       <Text
                         style={{
                           fontSize: 16,
                           color: '#fff',
                           fontFamily: 'Poppins-Medium',
                         }}>
-                        {item.original_title.slice(0, 30)}
+                        {item.original_title}
                       </Text>
                       <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <RateIcon name="star" size={15} color="#FFE234" />
                         <Text
                           style={{
@@ -135,14 +140,36 @@ const MovieList = ({}) => {
         /*  renderSectionHeader={({section: {title}}) => (
           <Text style={styles.header}>{title}</Text>
         )} */
-        ListHeaderComponent={({item}) => (
+        ListHeaderComponent={({ item }) => (
           <Banner
             url={
               'https://image.tmdb.org/t/p/original/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg'
             }
           />
         )}
-      />
+        ListFooterComponent={() => (
+          <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', marginBottom: 10, marginTop: 20 }}>
+            <ArrowIcon name='left' color={'#fff'} size={20}></ArrowIcon>
+            <FlatList horizontal={true}
+              data={numbers} renderItem={({ item }) => (
+                <TouchableOpacity onPress={async () => {
+                  const pageByMovies = await fetchPopularMovies(item.key);
+                  setData(pageByMovies.results);
+                  ref.scrollToOffset({
+                    offset: 0,
+                    animated: true
+                  })
+                }}>
+                  <Text style={{ color: '#fff', padding: 10, fontSize: 15 }}>{item.title}</Text>
+                </TouchableOpacity>
+              )} />
+            <ArrowIcon name='right' color={'#fff'} size={20}></ArrowIcon>
+          </View>
+        )}
+        ListFooterComponentStyle={{
+          flex: 0.3,
+          marginHorizontal: 100
+        }} />
     </SafeAreaView>
   );
 };

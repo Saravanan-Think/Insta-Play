@@ -36,7 +36,7 @@ function StackNavigator() {
             headerTintColor: '#fff',
             headerShadowVisible: false,
             statusBarColor: '#263F61',
-            headerBackVisible:false
+            headerBackVisible:true
           }}
         />
       </Stack.Navigator>
